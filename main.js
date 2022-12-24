@@ -1,46 +1,98 @@
-const { app, BrowserWindow } = require('electron')
-let win
-const createWindow = () => {
-    const win = new BrowserWindow({
+const electronApp = require('electron').app;
+const electronBrowserWindow = require('electron').BrowserWindow;
+const electronIpcMain = require('electron').ipcMain;
+const {screen} = require('electron')
+const nodePath = require("path");
+let MAIN;
+let TOUCH;
+let externalDisplay;
+
+function createWindow() {
+    return new electronBrowserWindow({
+        x: 0,
+        y: 0,
         width: 800,
         height: 600,
+        show: false,
         kiosk: true,
-        autoHideMenuBar: true
-    })
-    win.loadFile('main.html')
-
+        autoHideMenuBar: true,
+        webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            preload: nodePath.join(__dirname, 'preload.js')
+        }
+    });
 }
 
-app.whenReady().then(() => {
-    const { screen } = require('electron')
+function createSecondWindow() {
+    const {screen} = require('electron')
     const displays = screen.getAllDisplays()
     const externalDisplay = displays.find((display) => {
         return display.bounds.x !== 0 || display.bounds.y !== 0
     })
+    return new electronBrowserWindow({
+        width: 800,
+        height: 600,
+        show: false,
+        kiosk: true,
+        x: externalDisplay.bounds.x + 50,
+        y: externalDisplay.bounds.y + 50,
+        autoHideMenuBar: true,
+        webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            preload: nodePath.join(__dirname, 'preload.js')
+        }
+    });
+}
 
-    if (externalDisplay) {
-        win2 = new BrowserWindow({
-            x: externalDisplay.bounds.x + 50,
-            y: externalDisplay.bounds.y + 50,
-            width: 800,
-            height: 600,
-            kiosk: true,
-            autoHideMenuBar: true
-        })
-        win2.loadFile('Touch.html')
-    }
-})
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit()
-})
-
-app.whenReady().then(() => {
-    createWindow()
-
-    app.on('activate', () => {
-        // On macOS it's common to re-create a window in the app when the
-        // dock icon is clicked and there are no other windows open.
-        if (BrowserWindow.getAllWindows().length === 0) createWindow()
+function showMainWindow() {
+    MAIN.loadFile('main.html').then(() => {
+        MAIN.show();
     })
+}
+
+function showTouchWindow() {
+    TOUCH.loadFile('touch.html').then(() => {
+        TOUCH.show();
+    })
+}
+
+
+electronApp.on('ready', () => {
+    const displays = screen.getAllDisplays()
+    const externalDisplay = displays.find((display) => {
+        return display.bounds.x !== 0 || display.bounds.y !== 0
+    })
+    if(externalDisplay) {
+        TOUCH = createSecondWindow();
+        showTouchWindow();
+    }
+
+    MAIN = createWindow();
+    showMainWindow();
+});
+
+electronApp.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        electronApp.quit();
+    }
+});
+
+electronApp.on('activate', () => {
+    if (electronBrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+    }
+});
+
+
+function showDetails() {
+    MAIN.loadFile('detail.html').then(() => {
+        MAIN.show();
+    })
+}
+
+
+electronIpcMain.on('message:detailsShow', () => {
+    showDetails();
 })
