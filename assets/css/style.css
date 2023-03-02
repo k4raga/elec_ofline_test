@@ -1,0 +1,51 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+.main {
+    overflow: hidden;
+}
+
+.wrapper-card {
+    padding: 86px 86px 86px 1208px;
+    width: 626px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+}
+
+.people-item {
+    width: 297px;
+    height: 280px;
+}
+
+.people-item img {
+    width: 297px;
+    height: 270px;
+}
+
+.touch-video {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: -1;
+}
+.detail_main {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: -1;
+    width: 1920px;
+    height: 1080px;
+
+}
+.main-video {
+    -o-object-fit: cover;
+    object-fit: cover;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}

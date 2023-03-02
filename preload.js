@@ -7,7 +7,7 @@ const ipc = {
     'render': {
         // From render to main.
         'send': [
-            'message:detailsShow',
+            'message:people',
         ],
         // From main to render.
         'receive': [],

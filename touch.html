@@ -4,22 +4,55 @@
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
     <title>Hello World!</title>
 </head>
 <body>
-<h1>Главный экран12</h1>
 
-<button type="button" id="login" >
-    Переход на видео
-</button>
+
+
+
+
+<div class="wrapper-card">
+    <div class="people-item" id="people">
+        <img src="assets/people.png" alt="">
+    </div>
+    <div class="people-item">
+        <img src="assets/lang.png" alt="">
+    </div>
+    <div class="people-item">
+        <img src="assets/trades.png" alt="">
+    </div>
+    <div class="people-item">
+        <img src="assets/Folklore.png" alt="">
+    </div>
+    <div class="people-item">
+        <img src="assets/Nature.png" alt="">
+    </div>
+    <div class="people-item">
+        <img src="assets/Meeting.png" alt="">
+    </div>
+</div>
+
+<!--<button type="button" id="login" >-->
+<!--    Переход на видео-->
+<!--</button>-->
+
+
+
+
+
+<video class="touch-video" autoplay muted loop>
+    <source src="assets/Ethnomap_seasons_10-01-2023.mp4" type="video/mp4"></source>
+</video>
 
 
 </body>
 
 <script>
     // For testing purposes only.
-    document.getElementById('login').addEventListener('click', () => {
-        window.ipcRender.send('message:detailsShow');
+    document.getElementById('people').addEventListener('click', () => {
+        window.ipcRender.send('message:people');
     });
 </script>
 <link rel="stylesheet" href="touch.css">

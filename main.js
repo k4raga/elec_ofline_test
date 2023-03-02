@@ -1,7 +1,7 @@
 const electronApp = require('electron').app;
 const electronBrowserWindow = require('electron').BrowserWindow;
 const electronIpcMain = require('electron').ipcMain;
-const {screen} = require('electron')
+const { screen } = require('electron')
 const nodePath = require("path");
 let MAIN;
 let TOUCH;
@@ -11,11 +11,12 @@ function createWindow() {
     return new electronBrowserWindow({
         x: 0,
         y: 0,
-        width: 800,
-        height: 600,
+        width: 960,
+        height: 540,
         show: false,
         kiosk: true,
-        autoHideMenuBar: true,
+        fullscreen: false,
+        autoHideMenuBar: false,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
@@ -25,19 +26,20 @@ function createWindow() {
 }
 
 function createSecondWindow() {
-    const {screen} = require('electron')
+    const { screen } = require('electron')
     const displays = screen.getAllDisplays()
     const externalDisplay = displays.find((display) => {
         return display.bounds.x !== 0 || display.bounds.y !== 0
     })
     return new electronBrowserWindow({
-        width: 800,
-        height: 600,
+        width: 960,
+        height: 540,
         show: false,
         kiosk: true,
+        fullscreen: false,
         x: externalDisplay.bounds.x + 50,
         y: externalDisplay.bounds.y + 50,
-        autoHideMenuBar: true,
+        autoHideMenuBar: false,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
@@ -64,7 +66,7 @@ electronApp.on('ready', () => {
     const externalDisplay = displays.find((display) => {
         return display.bounds.x !== 0 || display.bounds.y !== 0
     })
-    if(externalDisplay) {
+    if (externalDisplay) {
         TOUCH = createSecondWindow();
         showTouchWindow();
     }
@@ -87,12 +89,15 @@ electronApp.on('activate', () => {
 
 
 function showDetails() {
-    MAIN.loadFile('detail.html').then(() => {
+    MAIN.loadFile('html/people/detail/main/itel/itel.html').then(() => {
         MAIN.show();
+    })
+    TOUCH.loadFile('html/people/detail/touch/itel/itel_touch.html').then(() => {
+        TOUCH.show();
     })
 }
 
 
-electronIpcMain.on('message:detailsShow', () => {
+electronIpcMain.on('message:people', () => {
     showDetails();
 })
